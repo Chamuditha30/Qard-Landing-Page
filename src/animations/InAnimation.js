@@ -1,7 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function InAnimation({ children, direction }) {
+export default function InAnimation({
+  children,
+  direction,
+  fullWidth = false,
+}) {
   let initial = {};
   let animate = {};
 
@@ -31,7 +35,7 @@ export default function InAnimation({ children, direction }) {
   return (
     <motion.div
       initial={initial}
-      animate={animate}
+      whileInView={animate}
       transition={{
         type: "spring",
         stiffness: 100,
@@ -40,7 +44,7 @@ export default function InAnimation({ children, direction }) {
         ease: "easeOut",
       }}
       viewport={{ once: true, amount: 0.3 }}
-      className="will-change-transform"
+      className={`will-change-transform ${fullWidth ? "w-full" : ""}`}
     >
       {children}
     </motion.div>
