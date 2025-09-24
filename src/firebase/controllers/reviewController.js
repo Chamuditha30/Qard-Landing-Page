@@ -1,8 +1,17 @@
 import { db } from "../config/firebaseConfig";
-import { getDocs, collection, addDoc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  increment,
+  getDoc,
+} from "firebase/firestore";
 
-//create ref for collection
+//create ref for collections
 const reviewCollectionRef = collection(db, "reviews");
+const statCollectionRef = collection(db, "stats");
 
 //create a review
 export const createReview = async ({ name, role, comment, rate }) => {
@@ -16,6 +25,16 @@ export const createReview = async ({ name, role, comment, rate }) => {
     };
 
     const res = await addDoc(reviewCollectionRef, review);
+
+    //increment totalRates & totalReviews if review submit
+    if (res) {
+      const statsRef = doc(statCollectionRef, "appStats");
+      await updateDoc(statsRef, {
+        totalRates: increment(rate),
+        totalReviews: increment(1),
+      });
+      console.log("Review rates saved");
+    }
 
     console.log("Review added with ID: ", res.id);
     return true;
@@ -70,6 +89,47 @@ export const getRandomReviews = async () => {
 
     //pick first 5 items
     return shuffled.slice(0, 5);
+  } catch (error) {
+    console.log("Server error: ", error);
+    return [];
+  }
+};
+
+//update downloads
+export const updateDownloads = async () => {
+  try {
+    const statsRef = doc(statCollectionRef, "appStats");
+    await updateDoc(statsRef, {
+      downloads: increment(1),
+    });
+    console.log("Downloads saved");
+    return true;
+  } catch (error) {
+    console.log("Server error: ", error);
+    return false;
+  }
+};
+
+//get stats
+export const getStats = async () => {
+  try {
+    const statsRef = doc(statCollectionRef, "appStats");
+    const snapshot = await getDoc(statsRef);
+
+    if (!snapshot.exists()) {
+      console.log("No stats found");
+      return [];
+    }
+
+    const stats = snapshot.data();
+
+    //calculate avg rate
+    const avgRate =
+      stats.totalReviews > 0
+        ? parseFloat((stats.totalRates / stats.totalReviews).toFixed(1))
+        : 0;
+
+    return { ...stats, avgRate };
   } catch (error) {
     console.log("Server error: ", error);
     return [];

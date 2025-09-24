@@ -51,7 +51,7 @@ export default function OverviewCard() {
         </div>
 
         {/* back side */}
-        <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-4 rounded-2xl bg-blue-500 p-4 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-4 rounded-2xl border-2 border-white/10 bg-bg p-4 shadow-lg shadow-white/10 [backface-visibility:hidden] [transform:rotateY(180deg)]">
           <p className="text-xl font-semibold text-white md:text-3xl">
             Overview
           </p>

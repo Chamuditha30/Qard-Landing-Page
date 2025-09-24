@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/images/logo.png";
 import DownloadButton from "../components/DownloadButton";
 import SoonButton from "../components/SoonButton";
@@ -6,8 +6,26 @@ import DownloadsStat from "../components/DownloadsStat";
 import RatesStat from "../components/RatesStat";
 import InAnimation from "../animations/InAnimation";
 import OverviewCard from "../components/OverviewCard";
+import { getStats } from "../firebase/controllers/reviewController";
 
 export default function OverviewSection() {
+  //stats state
+  const [stats, setStats] = useState({
+    downloads: 0,
+    totalRates: 0,
+    totalReviews: 0,
+    avgRate: 0,
+  });
+
+  //get all stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      const res = await getStats();
+      setStats(res);
+    };
+    fetchStats();
+  }, []);
+
   return (
     <div className="z-10 flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto bg-bg md:h-screen md:flex-row md:gap-0 md:px-20">
       {/* text section */}
@@ -41,9 +59,9 @@ export default function OverviewSection() {
           </div>
 
           {/* stats */}
-          <div className="flex w-full items-center justify-center gap-4 md:justify-start">
-            <DownloadsStat downloads={10} />
-            <RatesStat rates={4} />
+          <div className="flex w-full items-center justify-center gap-5 md:justify-start">
+            <DownloadsStat downloads={stats.downloads} />
+            <RatesStat rates={stats.avgRate} />
           </div>
         </InAnimation>
       </div>

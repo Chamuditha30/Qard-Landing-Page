@@ -6,7 +6,7 @@ import WhyQardSection from "./sections/WhyQardSection";
 function App() {
   return (
     <>
-      <Toaster position="top-right" toastOptions={{ duration: 5000 }} />
+      <Toaster position="bottom-right" toastOptions={{ duration: 5000 }} />
       <OverviewSection />
       <WhyQardSection />
       <WhatUsersSaySection />
